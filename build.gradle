@@ -1,0 +1,46 @@
+plugins {
+  id "nebula.ospackage" version "4.10.0"
+}
+
+apply plugin: 'java'
+apply plugin: 'nebula.deb'
+
+repositories {
+    jcenter()
+    mavenCentral()
+}
+
+dependencies {
+    compile 'org.slf4j:slf4j-api:1.7.13'
+    compile group: 'org.springframework.boot', name: 'spring-boot-starter-webflux', version: '2.0.4.RELEASE'
+
+    testCompile 'junit:junit:3.8.2'
+}
+
+jar {
+  manifest {
+    attributes(
+      "Class-Path": configurations.compile.collect { it.getName() }.join(' '),
+      "Main-Class": "com.neb.app.Application")
+  }
+}
+
+task createDeb(type: Deb) {
+  packageName = rootProject.name
+  version = '0.0.1'
+  release = '1'
+
+  into "/opt/${packageName}"
+
+  from(jar.outputs.files) {
+    into 'lib'
+  }
+  from(configurations.runtime) {
+    into 'lib'
+  }
+  from("./${packageName}.service") {
+    into 'bin'
+  }
+
+  link("/etc/systemd/system/${packageName}.service", "/opt/${packageName}/bin/${packageName}.service")
+}

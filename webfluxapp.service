@@ -1,0 +1,11 @@
+[Unit]
+Description=Webflux app
+
+[Install]
+WantedBy=multi-user.target
+
+[Service]
+TimeoutSec=20
+Restart=always
+WorkingDirectory=/opt/webfluxapp
+ExecStart=/usr/bin/java -jar lib/webfluxapp.jar
