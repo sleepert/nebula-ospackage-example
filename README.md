@@ -5,7 +5,7 @@ Basic usage for nebula-ospackage. This will create a .deb image for installing a
 ## Usage
 
 ```
-gradle clean guild createDeb
+gradle clean build createDeb
 ```
 Your debian file will be created in the build/distributions folder
 
