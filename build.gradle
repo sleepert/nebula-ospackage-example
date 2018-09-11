@@ -5,6 +5,11 @@ plugins {
 apply plugin: 'java'
 apply plugin: 'nebula.deb'
 
+def service = rootProject.name
+def user = service + "-user"
+def group = service + "-group"
+ext.shell = "#!/bin/sh"
+
 repositories {
     jcenter()
     mavenCentral()
@@ -25,12 +30,17 @@ jar {
   }
 }
 
-task createDeb(type: Deb) {
+task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   packageName = rootProject.name
   version = '0.0.1'
-  release = '1'
+  release = '10'
 
-  into "/opt/${packageName}"
+  preInstall file('scripts/deb/preInstall.sh')
+  postInstall file('scripts/deb/postInstall.sh')
+  preUninstall file('scripts/deb/preUninstall.sh')
+  postUninstall file('scripts/deb/postUninstall.sh')
+
+  into "/opt/${service}"
 
   from(jar.outputs.files) {
     into 'lib'
@@ -38,9 +48,35 @@ task createDeb(type: Deb) {
   from(configurations.runtime) {
     into 'lib'
   }
-  from("./${packageName}.service") {
+  from("./${service}.service") {
     into 'bin'
   }
 
-  link("/etc/systemd/system/${packageName}.service", "/opt/${packageName}/bin/${packageName}.service")
+  link("/etc/systemd/system/${service}.service", "/opt/${service}/bin/${service}.service")
+}
+
+task createServiceScripts() {
+  mkdir "scripts/deb"
+  createFile("scripts/deb/preInstall.sh",
+    "/usr/sbin/groupadd -f -r ${group}\n\n",
+    "/usr/sbin/useradd -r -m -c \"${user} user\" ${user} -g ${group} 2> /dev/null || :")
+
+  createFile("scripts/deb/postInstall.sh",
+    "chown -R ${user}:${group} /opt/${service}")
+
+  createFile("scripts/deb/preUninstall.sh",
+    "if ( \$(ps -ef | grep ${service}.jar | grep -v grep | wc -l) > 0 ) then\n",
+    "  service ${service} stop\nfi")
+  
+  createFile("scripts/deb/postUninstall.sh", 
+    "echo \"uninstall successful\"")
+}
+
+def createFile(fileName, firstLine, secondLine="") { 
+  def file = new File(fileName)
+  if (!file.canRead()) {
+    file << "${shell}\n\n"
+    file << firstLine
+    file << secondLine
+  }
 }
