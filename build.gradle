@@ -33,7 +33,7 @@ jar {
 task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   packageName = rootProject.name
   version = '0.0.1'
-  release = '10'
+  release = '11'
 
   preInstall file('scripts/deb/preInstall.sh')
   postInstall file('scripts/deb/postInstall.sh')
@@ -55,21 +55,34 @@ task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   link("/etc/systemd/system/${service}.service", "/opt/${service}/bin/${service}.service")
 }
 
+
+/*
+ Creates a simple set of (un)install scripts that are run when we install
+ our debian package. These are recreated eachtime we run the createDeb task.
+ The scripts will create a new user and group, will set user permissions on
+ the libraries that are copied to the opt folder and will ensure that the
+ service is stopped each time a new deb release is installed.
+*/
 task createServiceScripts() {
-  mkdir "scripts/deb"
-  createFile("scripts/deb/preInstall.sh",
-    "/usr/sbin/groupadd -f -r ${group}\n\n",
-    "/usr/sbin/useradd -r -m -c \"${user} user\" ${user} -g ${group} 2> /dev/null || :")
+  doFirst {
+    delete "scripts/"
+  }
+  doLast {
+    mkdir "scripts/deb"
+    createFile("scripts/deb/preInstall.sh",
+      "/usr/sbin/groupadd -f -r ${group}\n\n",
+      "/usr/sbin/useradd -r -m -c \"${user} user\" ${user} -g ${group} 2> /dev/null || :")
 
-  createFile("scripts/deb/postInstall.sh",
-    "chown -R ${user}:${group} /opt/${service}")
+    createFile("scripts/deb/postInstall.sh",
+      "chown -R ${user}:${group} /opt/${service}")
 
-  createFile("scripts/deb/preUninstall.sh",
-    "if ( \$(ps -ef | grep ${service}.jar | grep -v grep | wc -l) > 0 ) then\n",
-    "  service ${service} stop\nfi")
+    createFile("scripts/deb/preUninstall.sh",
+      "if ( \$(ps -ef | grep ${service}.jar | grep -v grep | wc -l) > 0 ) then\n",
+      "  service ${service} stop\nfi")
   
-  createFile("scripts/deb/postUninstall.sh", 
-    "echo \"uninstall successful\"")
+    createFile("scripts/deb/postUninstall.sh", 
+      "echo \"uninstall successful\"")
+  }
 }
 
 def createFile(fileName, firstLine, secondLine="") { 

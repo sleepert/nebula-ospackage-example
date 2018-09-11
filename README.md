@@ -1,6 +1,6 @@
 # nebula-ospackage-example
 
-Basic usage for nebula-ospackage. This will create a .deb image for installing on your debian distribution
+Basic usage for nebula-ospackage. This will create a .deb image for installing a simple java webapp on your debian distribution. 
 
 ## Usage
 
@@ -11,7 +11,7 @@ Your debian file will be created in the build/distributions folder
 
 to install:
 ```
-sudo apt install <path to deb>
+sudo apt install ./<path to deb>
 ```
 
 After installation simple start the service
