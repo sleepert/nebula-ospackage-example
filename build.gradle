@@ -33,7 +33,7 @@ jar {
 task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   packageName = rootProject.name
   version = '0.0.1'
-  release = '11'
+  release = '12'
 
   preInstall file('scripts/deb/preInstall.sh')
   postInstall file('scripts/deb/postInstall.sh')

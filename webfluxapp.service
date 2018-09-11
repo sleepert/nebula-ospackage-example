@@ -5,6 +5,8 @@ Description=Webflux app
 WantedBy=multi-user.target
 
 [Service]
+User=webfluxapp-user
+Group=webfluxapp-group
 TimeoutSec=20
 Restart=always
 WorkingDirectory=/opt/webfluxapp
