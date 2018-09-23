@@ -33,13 +33,15 @@ jar {
 task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   packageName = rootProject.name
   version = '0.0.1'
-  release = '12'
+  release = '14'
 
   preInstall file('scripts/deb/preInstall.sh')
   postInstall file('scripts/deb/postInstall.sh')
   preUninstall file('scripts/deb/preUninstall.sh')
   postUninstall file('scripts/deb/postUninstall.sh')
 
+  requires('java8-runtime-headless')
+  
   into "/opt/${service}"
 
   from(jar.outputs.files) {
