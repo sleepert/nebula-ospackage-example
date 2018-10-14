@@ -1,0 +1,33 @@
+{
+  "variables": {
+    "project_name": "webfluxapp",
+    "project_version": "0.0.1",
+    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
+    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
+    "region": "eu-west-1",
+    "java8_ami": "ami-0f53499481c4fe1db",
+    "deb_location": "/home/ubuntu/installer.deb",
+    "source_deb_file": ""
+  },
+  "provisioners": [
+    {
+      "type": "file",
+      "source": "{{user `source_deb_file`}}",
+      "destination": "{{user `deb_location`}}"
+    },
+    {
+      "type": "shell",
+      "inline": ["sudo apt install {{user `deb_location`}}"]
+    }
+  ],
+  "builders": [{
+    "ami_name": "{{user `project_name`}}-{{user `project_version`}}",
+    "type": "amazon-ebs",
+    "access_key": "{{user `aws_access_key`}}",
+    "secret_key": "{{user `aws_secret_key`}}",
+    "region": "{{user `region`}}",
+    "source_ami": "{{user `java8_ami`}}",
+    "instance_type": "t2.micro",
+    "ssh_username": "ubuntu"
+  }]
+}

@@ -30,10 +30,10 @@ jar {
   }
 }
 
-task createDeb(type: Rpm, dependsOn: 'createServiceScripts') {
+task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   packageName = rootProject.name
   version = '0.0.1'
-  release = '14'
+  release = '15'
 
   preInstall file('scripts/deb/preInstall.sh')
   postInstall file('scripts/deb/postInstall.sh')
