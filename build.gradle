@@ -39,6 +39,8 @@ task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
   postInstall file('scripts/deb/postInstall.sh')
   preUninstall file('scripts/deb/preUninstall.sh')
   postUninstall file('scripts/deb/postUninstall.sh')
+  
+  requires('java8-runtime-headless')
 
   into "/opt/${service}"
 
