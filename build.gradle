@@ -30,7 +30,7 @@ jar {
   }
 }
 
-task createDeb(type: Deb, dependsOn: 'createServiceScripts') {
+task createDeb(type: Rpm, dependsOn: 'createServiceScripts') {
   packageName = rootProject.name
   version = '0.0.1'
   release = '14'
@@ -76,7 +76,7 @@ task createServiceScripts() {
       "/usr/sbin/useradd -r -m -c \"${user} user\" ${user} -g ${group} 2> /dev/null || :")
 
     createFile("scripts/deb/postInstall.sh",
-      "chown -R ${user}:${group} /opt/${service}")
+      "chown -R ${user}:${group} /opt/${service}\nsystemctl enable /opt/${service}/bin/${service}.service")
 
     createFile("scripts/deb/preUninstall.sh",
       "if ( \$(ps -ef | grep ${service}.jar | grep -v grep | wc -l) > 0 ) then\n",
