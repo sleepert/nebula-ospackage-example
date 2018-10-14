@@ -23,3 +23,18 @@ service webfluxapp start
 service will print "hello world" every second 10 times
 
 localhost:8091/hello
+
+## Baking an AMI
+create a JAVA8 ami with the packer file located [here](https://github.com/sleepert/aws-java8-ami)
+
+Ensure you have an IAM user with full access to ec2 and export the user access keys
+```
+export AWS_ACCESS_KEY_ID=xxx
+export AWS_SECRET_ACCESS_KEY=xxxx
+```
+
+run the following command
+
+```
+packer build -var 'source_deb_file=relative/path/to/deb' packer.json
+```
