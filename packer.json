@@ -5,7 +5,7 @@
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "region": "eu-west-1",
-    "java8_ami": "ami-0f53499481c4fe1db",
+    "java8_ami": "ami-0773391ae604c49a4",
     "deb_location": "/home/ubuntu/installer.deb",
     "source_deb_file": ""
   },
