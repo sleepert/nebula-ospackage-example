@@ -17,7 +17,7 @@
     },
     {
       "type": "shell",
-      "inline": ["sudo apt install {{user `deb_location`}}"]
+      "inline": ["sudo apt install -y {{user `deb_location`}}"]
     }
   ],
   "builders": [{
